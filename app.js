@@ -9,7 +9,7 @@ const express = require("express"),
       app =  express(),
       seedDB = require("./seed");
 
-
+//requiring routes
 const commentRoutes =   require("./routes/comments"),
     campgroundRoutes =  require("./routes/campgrounds"),
     indexRoutes =       require("./routes/index");
@@ -58,9 +58,10 @@ app.use((req,res,next)=>{
   next()
 })
 
-app.use(indexRoutes);
-app.use(commentRoutes);
-app.use(campgroundRoutes);
+app.use("/",indexRoutes);
+app.use("/campgrounds/:id/comments",commentRoutes);
+//all routes for campgrounds page, start with /campgrounds
+app.use("/campgrounds",campgroundRoutes);
 
 app.listen(PORT, () => {
   console.log(`YelpCamp has started on port ${PORT}`)

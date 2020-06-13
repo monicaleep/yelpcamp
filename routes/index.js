@@ -1,21 +1,21 @@
 const express = require("express");
 const router = express.Router();
+const passport = require('passport');
+const User = require('../models/user')
 
 
+//root route
 router.get("/", (req, res) => {
   res.render("landing")
 });
 
-
-// =========
-//AUTH ROUTES
-// =========
 
 //show register FORM
 router.get("/register",(req,res)=>{
   res.render('register')
 })
 
+//handles sign up logic
 router.post("/register",(req,res)=>{
   const newUser = new User({username: req.body.username});
   User.register(newUser,req.body.password,(err,user)=>{
@@ -34,17 +34,18 @@ router.post("/register",(req,res)=>{
 router.get("/login",(req,res)=>{
   res.render('login')
 });
+
 //handling login logic
 router.post("/login",passport.authenticate('local',{
     successRedirect: "/campgrounds",
     failureRedirect: "/login"
   }));
-//logout ROUTES
+
+//logout ROUTE
 router.get("/logout",(req,res)=>{
   req.logout();
   res.redirect("/campgrounds")
 })
-
 
 //our middleware which uses passport to check if user is logged in
 function isLoggedIn(req, res, next){
@@ -54,3 +55,5 @@ function isLoggedIn(req, res, next){
     res.redirect("/login")
   }
 }
+
+module.exports = router;
