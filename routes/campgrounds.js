@@ -44,7 +44,7 @@ router.get("/:id",(req,res)=>{
   Campground.findById(req.params.id).populate("comments").exec((err,foundCampground)=>{
     if(err){
       console.log(err);
-      req.redirect("/campgrounds")
+      res.redirect("/campgrounds")
     } else {
       //console.log(foundCampground)
       // show more infromation about that campground
