@@ -37,7 +37,8 @@ app.use(bodyParser.urlencoded({
 }))
 //use the public folder to serve custom assets
 app.use(express.static(__dirname+"/public"))
-seedDB();
+
+//seedDB();// seeds the Database
 
 //passport config
 app.use(require('express-session')({
@@ -54,7 +55,7 @@ passport.deserializeUser(User.deserializeUser());
 //this middleware runs before every single route
 app.use((req,res,next)=>{
   res.locals.currentUser = req.user;
-  console.log(res.locals.currentUser)
+  //console.log(res.locals.currentUser)
   next()
 })
 
