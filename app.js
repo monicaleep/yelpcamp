@@ -9,6 +9,7 @@ const express = require("express"),
       app =  express(),
       seedDB = require("./seed");
 
+
 const commentRoutes =   require("./routes/comments"),
     campgroundRoutes =  require("./routes/campgrounds"),
     indexRoutes =       require("./routes/index");
