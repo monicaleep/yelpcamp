@@ -37,6 +37,11 @@ router.post("/", (req, res) => {
   })
 })
 
+// Create
+router.get("/new", (req, res) => {
+  res.render("campgrounds/new")
+})
+
 //SHOW.  shows more info about one campground
 //this needs to be below /new as it's same format
 router.get("/:id",(req,res)=>{
@@ -53,9 +58,6 @@ router.get("/:id",(req,res)=>{
   })
 })
 
-// Create
-router.get("/new", (req, res) => {
-  res.render("campgrounds/new")
-})
+
 
 module.exports = router;
