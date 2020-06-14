@@ -66,20 +66,17 @@ router.get("/:id",(req,res)=>{
 })
 
 // EDIT route
-router.get('/:id/edit',(req,res)=>{
+router.get('/:id/edit',checkCGOwnership,(req,res)=>{
+  //is user logged in
   Campground.findById(req.params.id,(err,foundCampground)=>{
-    if(err){
-      console.log(err);
-      res.redirect('/campgrounds')
-    } else{
-      res.render("campgrounds/edit",{
-        campground: foundCampground
-      })
-    }
+    res.render("campgrounds/edit",{
+      campground: foundCampground
+    })
   })
 })
+
 // UPDATE Route
-router.put('/:id',(req,res)=>{
+router.put('/:id',checkCGOwnership,(req,res)=>{
   //find and update
   Campground.findByIdAndUpdate(req.params.id,req.body.campground,(err,updatedCG)=>{
     if(err){
@@ -93,7 +90,7 @@ router.put('/:id',(req,res)=>{
 });
 
 //DESTROY ROUTE
-router.delete("/:id",async(req,res)=>{
+router.delete("/:id",checkCGOwnership,async(req,res)=>{
   try {
     let foundCampground = await Campground.findById(req.params.id);
     // remove associated comments from the database - else memory leak!
@@ -115,5 +112,28 @@ function isLoggedIn(req, res, next){
     res.redirect("/login")
   }
 }
+
+function checkCGOwnership(req,res,next){
+  if(req.isAuthenticated()){
+    Campground.findById(req.params.id,(err,foundCampground)=>{
+      if(err){
+        console.log(err);
+        res.redirect('back')
+      } else{
+        // does user own campground?
+        if(foundCampground.author.id.equals(req.user._id)){
+          next()
+        } else {
+          // otherwise redirect
+          res.redirect('back')
+        }
+      }
+    })
+    // if not, redirect
+  } else {
+    res.redirect("back")
+  }
+}
+
 
 module.exports = router;
