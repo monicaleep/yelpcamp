@@ -38,6 +38,8 @@ app.use(bodyParser.urlencoded({
 }))
 //use the public folder to serve custom assets
 app.use(express.static(__dirname+"/public"));
+
+//use method override to do put and delete requests
 app.use(methodOverride("_method"));
 //seedDB();// seeds the Database
 
