@@ -40,8 +40,8 @@ router.post("/",isLoggedIn,(req,res)=>{
           comment.save();
           cg.comments.push(comment);
           cg.save();
-          console.log(cg);
-          console.log(comment);
+          //console.log(cg);
+          //console.log(comment);
           res.redirect("/campgrounds/"+cg._id);
         }
       })

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Campground = require('../models/campground');
-
+const Comment = require('../models/comment')
 // INDEX
 router.get("/", (req, res) => {
   // get all campgrounds from the DB
@@ -38,7 +38,7 @@ router.post("/", isLoggedIn,(req, res) => {
       console.log(err);
       res.redirect("/campgrounds")
     } else {
-      console.log(newlycreated);
+      //console.log(newlycreated);
       res.redirect("/campgrounds")
     }
   })
@@ -90,6 +90,21 @@ router.put('/:id',(req,res)=>{
       res.redirect("/campgrounds/"+req.params.id)
     }
   })
+});
+
+//DESTROY ROUTE
+router.delete("/:id",async(req,res)=>{
+  try {
+    let foundCampground = await Campground.findById(req.params.id);
+    // remove associated comments from the database - else memory leak!
+    await foundCampground.comments.forEach(async(comment)=>{
+      await Comment.findByIdAndDelete(comment._id)
+    })
+    await foundCampground.remove();
+    res.redirect("/campgrounds");
+  } catch (error) {
+    res.redirect("/campgrounds");
+  }
 })
 
 //middleware

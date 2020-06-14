@@ -21,11 +21,14 @@
             <em>Added by: <%=campground.author.username%></em>
           </p>
           <a class="btn btn-warning" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
+          <form id="deleteForm" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="post">
+            <button class="btn btn-danger" type="submit" name="button">Delete</button>
+          </form>
         </div>
       </div>
       <div class="well">
         <div class="text-right">
-          <a class="btn btn-success" href="/campgrounds/<%=campground.id_%>/comments/new">Add new Comment</a>
+          <a class="btn btn-success" href="/campgrounds/<%=campground._id%>/comments/new">Add new Comment</a>
         </div>
         <hr>
           <% campground.comments.forEach(comment=>{ %>
