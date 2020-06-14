@@ -3,6 +3,7 @@ const express = require("express"),
       mongoose = require("mongoose"),
       passport = require('passport'),
       localStrategy = require('passport-local'),
+      methodOverride = require('method-override'),
       Campground = require("./models/campground"),
       Comment = require("./models/comment"),
       User = require("./models/user"),
@@ -36,8 +37,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 //use the public folder to serve custom assets
-app.use(express.static(__dirname+"/public"))
-
+app.use(express.static(__dirname+"/public"));
+app.use(methodOverride("_method"));
 //seedDB();// seeds the Database
 
 //passport config
