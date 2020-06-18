@@ -20,11 +20,12 @@ router.post("/register",(req,res)=>{
   const newUser = new User({username: req.body.username});
   User.register(newUser,req.body.password,(err,user)=>{
     if(err){
-      console.log(err);
-      res.render("register");
-      return
+    //  console.log(err);
+      req.flash("error",err.message)
+      return res.redirect("/register");
     }
     passport.authenticate('local')(req,res,function(){
+      req.flash("success","Welcome to Yelpcamp "+user.username)
       res.redirect("/campgrounds");
     });
   });
@@ -35,25 +36,23 @@ router.get("/login",(req,res)=>{
   res.render('login')
 });
 
-//handling login logic
-router.post("/login",passport.authenticate('local',{
-    successRedirect: "/campgrounds",
-    failureRedirect: "/login"
-  }));
+
 
 //logout ROUTE
 router.get("/logout",(req,res)=>{
   req.logout();
+  req.flash("success","Logged you out")
   res.redirect("/campgrounds")
 })
 
-//our middleware which uses passport to check if user is logged in
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  } else {
-    res.redirect("/login")
-  }
-}
+//handling login logic
+router.post("/login",passport.authenticate('local',{
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),function(req,res){
+    req.flash("success","Logged in as "+req.body.username);
+    res.redirect("/campgrounds");
+  });
+
 
 module.exports = router;

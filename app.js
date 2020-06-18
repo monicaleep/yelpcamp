@@ -2,13 +2,14 @@ const express = require("express"),
       bodyParser = require("body-parser"),
       mongoose = require("mongoose"),
       passport = require('passport'),
+      flash = require('connect-flash'),
       localStrategy = require('passport-local'),
       methodOverride = require('method-override'),
       Campground = require("./models/campground"),
       Comment = require("./models/comment"),
       User = require("./models/user"),
-      app =  express(),
-      seedDB = require("./seed");
+      app =  express();
+    //  seedDB = require("./seed");
 
 //requiring routes
 const commentRoutes =   require("./routes/comments"),
@@ -38,9 +39,10 @@ app.use(bodyParser.urlencoded({
 }))
 //use the public folder to serve custom assets
 app.use(express.static(__dirname+"/public"));
-
-//use method override to do put and delete requests
+//use method override to do put and delete requests in express
 app.use(methodOverride("_method"));
+//flash messages
+app.use(flash());
 //seedDB();// seeds the Database
 
 //passport config
@@ -58,7 +60,9 @@ passport.deserializeUser(User.deserializeUser());
 //this middleware runs before every single route
 app.use((req,res,next)=>{
   res.locals.currentUser = req.user;
-  //console.log(res.locals.currentUser)
+  //console.log(res.locals.currentUser);
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
   next()
 })
 
