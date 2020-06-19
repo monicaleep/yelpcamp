@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Comment = require('./comment');
 
 //Schema setup
 const campgroundSchema = new mongoose.Schema({
@@ -7,6 +6,7 @@ const campgroundSchema = new mongoose.Schema({
   image: String,
   description: String,
   price: String,
+  createdAt: {type: Date, default: Date.now},
   author: {
     id: {
       type: mongoose.Schema.Types.ObjectId,
