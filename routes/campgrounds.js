@@ -11,7 +11,8 @@ router.get("/", (req, res) => {
       console.log(err)
     } else {
       res.render("campgrounds/index",{
-        campgrounds:allcampgrounds})
+        campgrounds:allcampgrounds,
+        page:'campgrounds'})
     }
   })
 })
