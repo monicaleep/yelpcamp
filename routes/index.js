@@ -9,7 +9,6 @@ router.get("/", (req, res) => {
   res.render("landing")
 });
 
-
 //show register FORM
 router.get("/register",(req,res)=>{
   res.render('register',{page:'register'})
@@ -17,7 +16,9 @@ router.get("/register",(req,res)=>{
 
 //handles sign up logic
 router.post("/register",(req,res)=>{
-  const newUser = new User({username: req.body.username});
+
+  const newUser = new User({username: req.body.username,
+                            isAdmin: req.body.adminCode === process.env.SECRET_CODE});
   User.register(newUser,req.body.password,(err,user)=>{
     if(err){
     //  console.log(err);
