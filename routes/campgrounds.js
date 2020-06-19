@@ -22,6 +22,7 @@ router.post("/", middleware.isLoggedIn,(req, res) => {
   const name = req.body.name;
   const image = req.body.image;
   const description = req.body.description;
+  const price = req.body.price;
   const author = {
     id: req.user._id,
     username: req.user.username
@@ -29,6 +30,7 @@ router.post("/", middleware.isLoggedIn,(req, res) => {
   const newCampground = {
     name: name,
     image: image,
+    price: price,
     description: description,
     author: author
   }
