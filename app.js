@@ -24,7 +24,7 @@ const OPTIONS = {
   useFindAndModify: false,
   useCreateIndex: true
 }
-mongoose.connect("mongodb://localhost/yelpcamp",OPTIONS)
+mongoose.connect(`mongodb+srv://monica:${process.env.PW}@cluster0-4pk1k.mongodb.net/yelpcamp?retryWrites=true&w=majority`,OPTIONS)
   .then(()=>{
     console.log('MongoDB connected')
   })
