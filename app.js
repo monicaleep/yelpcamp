@@ -24,13 +24,7 @@ const OPTIONS = {
   useFindAndModify: false,
   useCreateIndex: true
 }
-// mongoose.connect(`mongodb+srv://monica:${4@g!yyTAcNw5n$q}@cluster0-4pk1k.mongodb.net/yelpcamp?retryWrites=true&w=majority`,OPTIONS)
-//   .then(()=>{
-//     console.log('MongoDB connected')
-//   })
-//   .catch((err)=>{
-//     console.log(err);
-//   });
+
 mongoose.connect(process.env.URL,OPTIONS)
   .then(()=>{
     console.log('MongoDB connected')
@@ -39,16 +33,6 @@ mongoose.connect(process.env.URL,OPTIONS)
     console.log(err);
   });
 
-// var store = new MongoDBStore({
-//   uri: 'mongodb://localhost/test',
-//   collection: 'sessions',
-//   },function(err){
-//     console.log(err + 'line 49')
-// });
-
-// store.on('error', function(error) {
-//   console.log(error + 'line 52');
-// });
 
 app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({
