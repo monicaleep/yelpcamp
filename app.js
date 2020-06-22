@@ -8,14 +8,14 @@ const express = require("express"),
       Campground = require("./models/campground"),
       Comment = require("./models/comment"),
       User = require("./models/user"),
+      session = require('express-session'),
+    //  MongoDBStore = require('connect-mongodb-session')(session),
+      MongoStore = require('connect-mongo')(session),
       app =  express();
-    //  seedDB = require("./seed");
+     //  seedDB = require("./seed");
+
 require('dotenv').config();
 
-//requiring routes
-const commentRoutes =   require("./routes/comments"),
-    campgroundRoutes =  require("./routes/campgrounds"),
-    indexRoutes =       require("./routes/index");
 
 const PORT = process.env.PORT || 3000;
 const OPTIONS = {
@@ -24,7 +24,14 @@ const OPTIONS = {
   useFindAndModify: false,
   useCreateIndex: true
 }
-mongoose.connect(`mongodb+srv://monica:${process.env.PW}@cluster0-4pk1k.mongodb.net/yelpcamp?retryWrites=true&w=majority`,OPTIONS)
+// mongoose.connect(`mongodb+srv://monica:${4@g!yyTAcNw5n$q}@cluster0-4pk1k.mongodb.net/yelpcamp?retryWrites=true&w=majority`,OPTIONS)
+//   .then(()=>{
+//     console.log('MongoDB connected')
+//   })
+//   .catch((err)=>{
+//     console.log(err);
+//   });
+mongoose.connect(process.env.URL,OPTIONS)
   .then(()=>{
     console.log('MongoDB connected')
   })
@@ -32,26 +39,35 @@ mongoose.connect(`mongodb+srv://monica:${process.env.PW}@cluster0-4pk1k.mongodb.
     console.log(err);
   });
 
+// var store = new MongoDBStore({
+//   uri: 'mongodb://localhost/test',
+//   collection: 'sessions',
+//   },function(err){
+//     console.log(err + 'line 49')
+// });
 
+// store.on('error', function(error) {
+//   console.log(error + 'line 52');
+// });
 
 app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-//use the public folder to serve custom assets
-app.use(express.static(__dirname+"/public"));
-//use method override to do put and delete requests in express
-app.use(methodOverride("_method"));
-//flash messages
-app.use(flash());
+
+app.use(express.static(__dirname+"/public")); //use the public folder to serve custom assets
+app.use(methodOverride("_method")); //use method override to do put and delete requests in express
+app.use(flash()); //flash messages
 //seedDB();// seeds the Database
 app.locals.moment = require('moment')
 //passport config
-app.use(require('express-session')({
+app.use(session({
   secret:"Once again rusty wins cutest dog",
   resave: false,
   saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
@@ -67,10 +83,16 @@ app.use((req,res,next)=>{
   next()
 })
 
+
+//requiring routes
+const commentRoutes =   require("./routes/comments"),
+      campgroundRoutes =  require("./routes/campgrounds"),
+      indexRoutes =       require("./routes/index");
 app.use("/",indexRoutes);
 app.use("/campgrounds/:id/comments",commentRoutes);
 //all routes for campgrounds page, start with /campgrounds
 app.use("/campgrounds",campgroundRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`YelpCamp has started on port ${PORT}`)
