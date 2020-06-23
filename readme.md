@@ -5,15 +5,16 @@ Made during the Web Developer Bootcamp on Udemy
 Tech Used:
 - Bootstrap
 - NodeJS
-- Express
+- Express + Router
 - ejs
 - PassportJS
-- mongodb
+- MongoDB w Mongoose
+- express-session
 
 To make this project "My Own" I have implemented the following features:
-- [ ] TODO
-- [ ] Likes/Dislikes
-- [ ] Campsite rating in comments
-- [ ] Sort comment by date or rating
+
+- [ ] Likes/Dislikes for the comments (upvote style)
+- [ ] Campsite rating in comments with stars
+- [ ] Sort comment by date, likes, or rating
 - [ ] Booking system on lefthand toolbar
 - [x] Add mongo-session to store user sessions
