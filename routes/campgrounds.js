@@ -95,20 +95,32 @@ router.put('/:id',middleware.checkCGOwnership,(req,res)=>{
 });
 
 //DESTROY ROUTE
-router.delete("/:id",middleware.checkCGOwnership,async(req,res)=>{
-  try {
-    let foundCampground = await Campground.findById(req.params.id);
-    // remove associated comments from the database - else memory leak!
-    await foundCampground.comments.forEach(async(comment)=>{
-      await Comment.findByIdAndDelete(comment._id)
+// router.delete("/:id",middleware.checkCGOwnership,async(req,res)=>{
+//   try {
+//     let foundCampground = await Campground.findById(req.params.id);
+//     // remove associated comments from the database - else memory leak!
+//     await foundCampground.comments.forEach(async(comment)=>{
+//       await Comment.findByIdAndDelete(comment._id)
+//     })
+//     await foundCampground.remove();
+//     res.redirect("/campgrounds");
+//   } catch (error) {
+//     res.redirect("/campgrounds");
+//   }
+// })
+router.delete("/:id", middleware.checkCGOwnership, (req, res) => {
+    Campground.findByIdAndRemove(req.params.id, (err, campgroundRemoved) => {
+        if (err) {
+            console.log(err);
+        }
+        Comment.deleteMany( {_id: { $in: campgroundRemoved.comments } }, (err) => {
+            if (err) {
+                console.log(err);
+            }
+            res.redirect("/campgrounds");
+        });
     })
-    await foundCampground.remove();
-    res.redirect("/campgrounds");
-  } catch (error) {
-    res.redirect("/campgrounds");
-  }
-})
-
+});
 
 
 
