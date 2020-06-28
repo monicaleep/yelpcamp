@@ -15,6 +15,6 @@ To make this project "My Own" I have implemented the following features:
 
 - [ ] Likes/Dislikes for the comments (upvote style)
 - [ ] Campsite rating in comments with stars
-- [ ] Sort comment by date, likes, or rating
+- [ ] Sort comment by date, likes,g or rating
 - [ ] Booking system on lefthand toolbar
 - [x] Add mongo-session to store user sessions

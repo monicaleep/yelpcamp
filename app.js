@@ -9,7 +9,6 @@ const express = require("express"),
       Comment = require("./models/comment"),
       User = require("./models/user"),
       session = require('express-session'),
-    //  MongoDBStore = require('connect-mongodb-session')(session),
       MongoStore = require('connect-mongo')(session),
       app =  express();
      //  seedDB = require("./seed");
@@ -49,6 +48,7 @@ app.use(session({
   secret:"Once again rusty wins cutest dog",
   resave: false,
   saveUninitialized: false,
+  cookie: {maxAge : 1000 * 60 * 60 },
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
