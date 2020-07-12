@@ -1,14 +1,16 @@
 <%- include("../partials/header") %>
-
 <div class="row">
   <div class="col-md-3">
+    <div class="map"> </div>
   </div>
   <div class="col-md-9">
     <div class="card mb-3">
       <img class="card-img-top img-responsive" src="<%= campground.image %>" alt="">
       <div class="card-body">
-        <h4><a><%= campground.name %> </a></h4>
-        <p class="float-right">$<%=Number(campground.price).toFixed(2) %>/night</p>
+        <p class="float-right">
+          $<%=Number(campground.price).toFixed(2) %>/night
+        </p>
+        <h4 class="card-title"><a><%= campground.name %> </a></h4>
         <p>
           <em>Added by: <%=campground.author.username%>, <%=moment(campground.createdAt).fromNow() %></em>
         </p>
@@ -22,8 +24,6 @@
         <% } %>
       </div>
     </div>
-
-
     <div class="card">
       <div class="card-body">
         <div class="text-right">
@@ -35,36 +35,30 @@
           <div class="col-md-12 mb-2">
             <div class="card">
               <div class="card-body">
-                <div class="float-left">
+                <div class="float-right">
+                  <p><%=moment(comment.createdAt).fromNow() %></p>
+                </div>
+                <div class="">
                   <h5 class="card-title"><%= comment.author.username %></h5>
                   <p class="card-text"><%= comment.text %> </p>
                 </div>
-                <div class="float-right">
+                  <div class="float-right">
+                  <% if((currentUser) && (comment.author.id.equals(currentUser._id)||currentUser.isAdmin)){%>
 
+                    <a href="/campgrounds/<%=campground._id%>/comments/<%=comment._id%>/edit" class="btn btn-sm btn-warning">Edit</a>
+                    <form id="deleteForm" action="/campgrounds/<%=campground._id%>/comments/<%=comment._id%>?_method=DELETE" method="post">
+                      <button class="btn btn-danger btn-sm" type="submit" name="button">Delete</button>
+                    </form>
 
-                    <p><%=moment(comment.createdAt).fromNow() %></p>
-                    <% if((currentUser) && (comment.author.id.equals(currentUser._id)||currentUser.isAdmin)){%>
-                    <div class="float-right">
-                      <a href="/campgrounds/<%=campground._id%>/comments/<%=comment._id%>/edit" class="btn btn-sm btn-warning">
-                        Edit
-                      </a>
-                      <form id="deleteForm" action="/campgrounds/<%=campground._id%>/comments/<%=comment._id%>?_method=DELETE" method="post">
-                        <button class="btn btn-danger btn-sm" type="submit" name="button">Delete</button>
-                      </form>
-                    </div>
-                    <% } %>
-                  </div>
+                  <% } %>
                 </div>
               </div>
             </div>
-            <% }) %>
           </div>
+          <% }) %>
         </div>
       </div>
     </div>
   </div>
-
-
-
-
+</div>
 <%- include("../partials/footer") %>
