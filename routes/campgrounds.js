@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
 })
 
 //CREATE
-router.post("/", middleware.isLoggedIn, upload.single('image'), (req, res) => {
+router.post("/", middleware.isLoggedIn, upload.single('image'),async (req, res) => {
   // GET DATA FROM Req.user and add to req.body object
   req.body.campground.author = {
     id: req.user._id,
@@ -55,22 +55,16 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), (req, res) => {
   }
   //if user attached a file
   if (req.file) {
-    cloudinary.uploader.upload(req.file.path,
+    await cloudinary.uploader.upload(req.file.path,
       {moderation:'webpurify'},
       function(err, result) {
       // add cloudinary url for the image to the campground object under image property
       req.body.campground.image = result.secure_url;
-      Campground.create(req.body.campground, function(err, campground) {
-        if (err) {
-          req.flash('error', err.message);
-          return res.redirect('back');
-        }
-        res.redirect('/campgrounds/' + campground.id);
-      });
-    });
+    })    
     //else if user attached a URL instead
   } else {
     req.body.campground.image= req.body.imgurl;
+  }
     Campground.create(req.body.campground,(err,cg)=>{
       if(err){
         console.log(err);
@@ -79,7 +73,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), (req, res) => {
       }
       res.redirect("/campgrounds/" + cg.id)
     })
-  }
 });
 
 
@@ -137,6 +130,10 @@ router.delete("/:id", middleware.checkCGOwnership, (req, res) => {
   Campground.findByIdAndRemove(req.params.id, (err, campgroundRemoved) => {
     if (err) {
       console.log(err);
+    }
+    const public_id = campgroundRemoved.image;
+    if(public_id.test(/cloudinary/)){
+
     }
     Comment.deleteMany({
       _id: {
