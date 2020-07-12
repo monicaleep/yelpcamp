@@ -5,8 +5,8 @@ const express = require("express"),
       flash = require('connect-flash'),
       localStrategy = require('passport-local'),
       methodOverride = require('method-override'),
-      Campground = require("./models/campground"),
-      Comment = require("./models/comment"),
+      // Campground = require("./models/campground"),
+      // Comment = require("./models/comment"),
       User = require("./models/user"),
       session = require('express-session'),
       MongoStore = require('connect-mongo')(session),
@@ -61,7 +61,7 @@ passport.deserializeUser(User.deserializeUser());
 //this middleware runs before every single route
 app.use((req,res,next)=>{
   res.locals.currentUser = req.user;
-  //console.log(res.locals.currentUser);
+  //for flash messages
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
   next()

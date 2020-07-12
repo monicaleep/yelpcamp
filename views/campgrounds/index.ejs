@@ -19,7 +19,7 @@
         <div class="card-body">
           <div class="caption">
             <h4 class="card-title">
-              <%=c.name%>
+              <%=c.name.substr(0,18)+(c.name.length>18?"...":"")%>
             </h4>
           </div>
           <p class="card-text">
