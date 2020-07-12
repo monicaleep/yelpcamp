@@ -1,9 +1,10 @@
 {
-  "ecmaVersion": "7",
+  "ecmaVersion": "8",
   "libs": [],
   "loadEagerly": [],
   "dontLoad": [
-    "node_modules/**"
+    "node_modules/**",
+    "/*.ejs"
   ],
   "plugins": {
     "node": {

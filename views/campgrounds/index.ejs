@@ -10,20 +10,24 @@
     </div>
   </header>
 
-  <div class="row text-center" style="display:flex; flex-wrap:wrap">
+  <div class="row text-center" style="">
 
     <% campgrounds.forEach(c=>{ %>
-    <div class="col-md-3 col-sm-6">
-      <div class="thumbnail">
-        <img src="<%=c.image%>" alt="">
-        <div class="caption">
-          <h4>
-            <%=c.name%>
-          </h4>
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+      <div class="card">
+        <img src="<%=c.image%>" alt="<%=c.name%>" class="card-img-top" style="height:200px; object-fit:cover">
+        <div class="card-body">
+          <div class="caption">
+            <h4 class="card-title">
+              <%=c.name%>
+            </h4>
+          </div>
+          <p class="card-text">
+            <a href="/campgrounds/<%= c._id %>" class="btn btn-primary">More Info</a>
+          </p>
         </div>
-        <p>
-          <a href="/campgrounds/<%= c._id %>" class="btn btn-primary">More Info</a>
-        </p>
+
+
       </div>
     </div>
     <% }) %>

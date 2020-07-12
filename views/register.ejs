@@ -1,25 +1,18 @@
 <%- include("partials/header") %>
-<div class="row">
-    <h1 style="text-align: center">Sign Up</h1>
-    <div style="width: 30%; margin: 25px auto;">
-        <form action="/register" method="post">
-            <div class="form-group">
-              <label for="username">Username</label>
-                <input class="form-control" type="text" name="username" placeholder="username">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input class="form-control" type="password" name="password" placeholder="password">
-            </div>
-            <div class="form-group">
-              <label for="password">Admin Code</label>
-                <input class="form-control" type="text" name="adminCode" placeholder="Admin Code">
-            </div>
-            <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block">Sign Up!</button>
-            </div>
-        </form>
-        <a href="/campgrounds">Go Back</a>
-    </div>
+<div class="row text-center">
+  <div class="col-md-12">
+    <h1 class="text-center">Sign Up</h1>
+    <form class="form-signin" action="/register" method="post">
+      <label for="username" class="sr-only">Username</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="password"  name="password" class="form-control" placeholder="Password" required>
+      <label for="adminCode" class="sr-only">Admin Code</label>
+      <input type="password" id="adminCode"  name="adminCode" class="form-control" placeholder="Admin Code (optional)">
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
+    </form>
+    <a href="/campgrounds">Go Back</a>
+  </div>
 </div>
 <%- include("partials/footer") %>
