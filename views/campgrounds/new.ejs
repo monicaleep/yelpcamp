@@ -1,5 +1,4 @@
 <%- include("../partials/header"); %>
-
   <div class="row justify-content-center text-center">
     <div class="col-md-12">
       <h1 >Create a new campground</h1>
@@ -16,16 +15,15 @@
         <div class="form-group">
           <input class="form-control" placeholder="Description" type="textarea" name="campground[description]" value="">
         </div>
-        <div class="col-12">
-          <div class="form-group">
-              <label for="image">Image Upload</label>
-                      <input type="file" id="image" name="image" accept="image/*">
-                </div>
-                <p>OR</p>
-          <div class="form-group">
-            <input class="form-control" type="text" name="imgurl" placeholder="Image URL">
-          </div>
+        <div class="form-group">
+          <input class="form-control" type="text" name="imgurl" placeholder="Image URL">
         </div>
+
+          <div class="form-group text-left">
+              <label for="image">Or Upload an Image:</label>
+                      <input class="form-control-file"type="file" id="image" name="image" accept="image/*">
+                </div>
+
         <div class="form-group">
           <button class="btn-block btn btn-lg btn-primary" type="submit" name="button">Submit</button>
         </div>

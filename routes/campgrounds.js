@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
 })
 
 //CREATE
-router.post("/", middleware.isLoggedIn, upload.single('image'),async (req, res) => {
+router.post("/", middleware.isLoggedIn, upload.single('image'), async (req, res) => {
   // GET DATA FROM Req.user and add to req.body object
   req.body.campground.author = {
     id: req.user._id,
@@ -55,26 +55,27 @@ router.post("/", middleware.isLoggedIn, upload.single('image'),async (req, res) 
   }
   //if user attached a file
   if (req.file) {
-    await cloudinary.uploader.upload(req.file.path,
-      {moderation:'webpurify'},
+    await cloudinary.uploader.upload(req.file.path, {
+        moderation: 'webpurify'
+      },
       function(err, result) {
-      // add cloudinary url for the image to the campground object under image property
-      req.body.campground.image = result.secure_url;
-    })    
-    //else if user attached a URL instead
+        // add cloudinary url for the image to the campground object under image property
+        req.body.campground.image = result.secure_url;
+        req.body.campground.imageId = result.public_id;
+      })
+    //else if user put a URL instead
   } else {
-    req.body.campground.image= req.body.imgurl;
+    req.body.campground.image = req.body.imgurl;
   }
-    Campground.create(req.body.campground,(err,cg)=>{
-      if(err){
-        console.log(err);
-        req.flash('error',err.message)
-        return res.redirect("back")
-      }
-      res.redirect("/campgrounds/" + cg.id)
-    })
+  Campground.create(req.body.campground, (err, cg) => {
+    if (err) {
+      console.log(err);
+      req.flash('error', err.message)
+      return res.redirect("back")
+    }
+    res.redirect("/campgrounds/" + cg.id)
+  })
 });
-
 
 // NEW
 router.get("/new", middleware.isLoggedIn, (req, res) => {
@@ -111,29 +112,66 @@ router.get('/:id/edit', middleware.checkCGOwnership, (req, res) => {
 })
 
 // UPDATE Route
-router.put('/:id', middleware.checkCGOwnership, (req, res) => {
+router.put('/:id', middleware.checkCGOwnership, upload.single('image'), (req, res) => {
   //find and update
-  Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCG) => {
+  Campground.findById(req.params.id, async (err, updatedCG) => {
     if (err) {
-      console.log(err);
-      res.redirect("/campgrounds")
+      req.flash("error", err.message);
+      return res.redirect('back');
     } else {
-      //redirect somewhere - the show page
-      res.redirect("/campgrounds/" + req.params.id)
+      //handle case where user uploads and image and changes the URL
+      if (req.file && req.body.imgurl != updatedCG.image) {
+        req.flash("error", "You can upload an image or change its URL, but not both");
+        return res.redirect("back");
+      }
+      //if image is uploaded or URL is changed
+      if (req.file || req.body.imgurl != updatedCG.image) {
+        //if old image is cloudinary, remove it
+        try {
+          if ((/cloudinary/).test(updatedCG.image)) {
+            await cloudinary.uploader.destroy(updatedCG.imageId);
+          }
+          //if new image is upload, upload it;
+          if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            updatedCG.image = result.secure_url;
+            updatedCG.imageId = result.public_id;
+          } else {
+            //if new image isjust a url
+            updatedCG.image = req.body.imgurl;
+            updatedCG.imageId = "";
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      updatedCG.name = req.body.campground.name;
+      updatedCG.price = req.body.campground.price;
+      updatedCG.description = req.body.campground.description;
+      updatedCG.save();
+      req.flash("success", "Updated " + req.body.campground.name);
+      res.redirect("/campgrounds/" + updatedCG._id)
     }
   })
 });
 
-//DESTROY ROUTE
 
+//DESTROY ROUTE
 router.delete("/:id", middleware.checkCGOwnership, (req, res) => {
-  Campground.findByIdAndRemove(req.params.id, (err, campgroundRemoved) => {
+  Campground.findByIdAndRemove(req.params.id, async (err, campgroundRemoved) => {
     if (err) {
-      console.log(err);
+      req.flash("error", "An error occurred: " + err.message);
+      return res.redirect("back");
     }
     const public_id = campgroundRemoved.image;
-    if(public_id.test(/cloudinary/)){
-
+    if (public_id && (/cloudinary/).test(public_id)) {
+      try {
+        await cloudinary.uploader.destroy(campgroundRemoved.imageId);
+        console.log("Deleted image")
+      } catch (err) {
+        req.flash("error", err.message);
+        return res.redirect("back");
+      }
     }
     Comment.deleteMany({
       _id: {
@@ -143,6 +181,7 @@ router.delete("/:id", middleware.checkCGOwnership, (req, res) => {
       if (err) {
         console.log(err);
       }
+      req.flash("success","Successfully deleted "+campgroundRemoved.name)
       res.redirect("/campgrounds");
     });
   })
